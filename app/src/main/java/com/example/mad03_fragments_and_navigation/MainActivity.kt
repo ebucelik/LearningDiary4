@@ -2,6 +2,7 @@ package com.example.mad03_fragments_and_navigation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -17,6 +18,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Log.i("MainActivity", "Its: OnCreate")
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         drawerLayout = binding.drawerLayout
@@ -27,6 +30,42 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
 
         NavigationUI.setupWithNavController(binding.navView, navController)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        Log.i("MainActivity", "Its: OnStart")
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        Log.i("MainActivity", "Its: OnPause")
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Log.i("MainActivity", "Its: OnResume")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        Log.i("MainActivity", "Its: OnDestroy")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+
+        Log.i("MainActivity", "Its: OnRestart")
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        Log.i("MainActivity", "Its: OnStop")
     }
 
     override fun onSupportNavigateUp(): Boolean {
