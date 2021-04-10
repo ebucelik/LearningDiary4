@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import com.example.mad03_fragments_and_navigation.databinding.FragmentQuizEndBinding
 
 
@@ -24,6 +25,10 @@ class QuizEndFragment : Fragment() {
 
         binding.score.text = args.score.toString() + "/" + args.questionSize.toString()
         // show score
+
+        binding.restartBtn.setOnClickListener {
+            findNavController().navigate(QuizEndFragmentDirections.actionQuizEndFragmentToQuizFragment())
+        }
 
         return binding.root
     }

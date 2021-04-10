@@ -23,8 +23,6 @@ class QuizFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_quiz, container, false)
 
-        index = 0
-
         binding.index = index + 1
         binding.questionsCount = questions.size
         binding.question = questions[index]
