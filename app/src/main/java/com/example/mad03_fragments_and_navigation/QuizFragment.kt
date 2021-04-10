@@ -8,24 +8,44 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.mad03_fragments_and_navigation.databinding.FragmentQuizBinding
 import com.example.mad03_fragments_and_navigation.models.QuestionCatalogue
+import com.example.mad03_fragments_and_navigation.viewmodels.QuizViewModel
 
 
 class QuizFragment : Fragment() {
 
     private lateinit var binding: FragmentQuizBinding
-    private val questions = QuestionCatalogue().defaultQuestions    // get a list of questions for the game
-    private var score = 0                                           // save the user's score
-    private var index = 0                                           // index for question data to show
+    private lateinit var viewModel: QuizViewModel
+    private var index: Int = 0
+    private var score: Int = 0
+    private var size: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_quiz, container, false)
 
-        binding.index = index + 1
-        binding.questionsCount = questions.size
-        binding.question = questions[index]
+        viewModel = ViewModelProvider(this).get(QuizViewModel::class.java)
+
+        viewModel.index.observe(viewLifecycleOwner, Observer { newIndex ->
+            binding.index = newIndex + 1
+            index = newIndex
+        })
+
+        viewModel.score.observe(viewLifecycleOwner, Observer { newScore ->
+            score = newScore
+        })
+
+        viewModel.size.observe(viewLifecycleOwner, Observer { newSize ->
+            binding.questionsCount = newSize
+            size = newSize
+        })
+
+        viewModel.questions.observe(viewLifecycleOwner, Observer { newQuestion ->
+            binding.question = newQuestion
+        })
 
         binding.btnNext.setOnClickListener { btnNextView ->
             nextQuestion(btnNextView)
@@ -44,28 +64,16 @@ class QuizFragment : Fragment() {
         val checkedRadioBtn = binding.answerBox.checkedRadioButtonId
 
         if(checkedRadioBtn != -1){
-            if(index <= questions.size-1){
+            if(index <= size-1){
                 val radio: RadioButton = binding.answerBox.findViewById(checkedRadioBtn)
+                viewModel.selectedAnswer = radio.text.toString()
 
-                for (answer in questions[index].answers){
-                    if(answer.answerText == radio.text.toString()){
-                        if(answer.isCorrectAnswer){
-                            score++
-                            break
-                        }
-                    }
-                }
+                viewModel.checkSelectedAnswer()
 
                 binding.answerBox.clearCheck()
-                index++
 
-                if(index >= questions.size){
-                    view.findNavController().navigate(QuizFragmentDirections.actionQuizFragmentToQuizEndFragment(score, questions.size))
-                }
-                else
-                {
-                    binding.index = index + 1
-                    binding.question = questions[index]
+                if(index >= size){
+                    view.findNavController().navigate(QuizFragmentDirections.actionQuizFragmentToQuizEndFragment(score, size))
                 }
             }
         }
